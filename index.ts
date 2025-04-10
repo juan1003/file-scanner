@@ -20,6 +20,28 @@ const scan: Function = async (path: string) => {
     return files;
 }
 
+async function sizeScan(path: string) {
+    const fs = require('fs');
+    const pathModule = require('path');
+
+    const files: { path: string, size: number }[] = [];
+
+    const scanDirectory = (dir: string) => {
+        fs.readdirSync(dir).forEach((file: string) => {
+            const filePath = pathModule.join(dir, file);
+            if (fs.statSync(filePath).isDirectory()) {
+                scanDirectory(filePath);
+            } else {
+                files.push({ path: filePath, size: fs.statSync(filePath).size });
+            }
+        });
+    };
+
+    scanDirectory(path);
+
+    return files;
+}
+
 const main = async () => {
     const path = process.argv[2];
     if (!path) {
@@ -28,7 +50,9 @@ const main = async () => {
     }
 
     const files = await scan(path);
-    console.log(files);
+    console.log('Files:', files);  
+    const sizes = await sizeScan(path);
+    console.log(files, sizes);
 }
 
 main().catch((error) => {
