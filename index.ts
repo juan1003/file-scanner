@@ -1,27 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// This code scans a directory and its subdirectories, returning a list of all files found.
-
-const scan: Function = async (pathName: string) => {  
-    const files: string[] = [];
-
-    const scanDirectory = (dir: string) => {
-        fs.readdirSync(dir).forEach((file: string) => {
-            const filePath = path.join(dir, file); 
-            if (fs.statSync(filePath).isDirectory()) {
-                scanDirectory(filePath);
-            } else {
-                files.push(filePath);
-            }
-        });
-    };
-
-    scanDirectory(pathName);
-
-    return files;
-}
-
 async function sizeScan(pathUrl: string) {
     const files: { path: string, size: number }[] = [];
 
@@ -48,10 +27,8 @@ const main = async () => {
         process.exit(1);
     }
 
-    const files = await scan(path);
-    console.log('Files:', files);  
     const sizes = await sizeScan(path);
-    console.log(files, sizes);
+    console.table(sizes);
 }
 
 main().catch((error) => {
