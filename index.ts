@@ -1,12 +1,14 @@
-const scan: Function = async (path: string) => {
-    const fs = require('fs');
-    const pathModule = require('path');
+import fs from 'fs';
+import path from 'path';
 
+// This code scans a directory and its subdirectories, returning a list of all files found.
+
+const scan: Function = async (pathName: string) => {  
     const files: string[] = [];
 
     const scanDirectory = (dir: string) => {
         fs.readdirSync(dir).forEach((file: string) => {
-            const filePath = pathModule.join(dir, file);
+            const filePath = path.join(dir, file); 
             if (fs.statSync(filePath).isDirectory()) {
                 scanDirectory(filePath);
             } else {
@@ -15,20 +17,17 @@ const scan: Function = async (path: string) => {
         });
     };
 
-    scanDirectory(path);
+    scanDirectory(pathName);
 
     return files;
 }
 
-async function sizeScan(path: string) {
-    const fs = require('fs');
-    const pathModule = require('path');
-
+async function sizeScan(pathUrl: string) {
     const files: { path: string, size: number }[] = [];
 
     const scanDirectory = (dir: string) => {
         fs.readdirSync(dir).forEach((file: string) => {
-            const filePath = pathModule.join(dir, file);
+            const filePath = path.join(dir, file);
             if (fs.statSync(filePath).isDirectory()) {
                 scanDirectory(filePath);
             } else {
@@ -37,7 +36,7 @@ async function sizeScan(path: string) {
         });
     };
 
-    scanDirectory(path);
+    scanDirectory(pathUrl);
 
     return files;
 }
